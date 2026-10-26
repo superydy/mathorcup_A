@@ -1,0 +1,11 @@
+{
+  "MAE": 0.33371498140158756,
+  "R2": 0.2391537154757179,
+  "Spearman": 0.431385307253458,
+  "relative_MAE_gain_vs_ET": 0.02662152127072304,
+  "corrected_approx_95pct_CI": [
+    0.016046943481665,
+    0.03719609905978108
+  ],
+  "label": "Post-hoc fixed 0.5 blend after observing opposing L1/MSE results. No weight scan. Reused folds; CI does not correct method-selection bias."
+}

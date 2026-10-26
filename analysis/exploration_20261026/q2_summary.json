@@ -1,0 +1,7 @@
+{
+  "modules": 19,
+  "outer_splits": 15,
+  "repetitions": 3,
+  "elapsed_seconds": 119.0601332,
+  "note": "Module-level predictive dependence only. Joint shuffling preserves within-module combinations. Positive-fold shares are dependent descriptive counts, not bootstrap confidence."
+}

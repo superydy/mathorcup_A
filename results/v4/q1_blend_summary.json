@@ -1,0 +1,74 @@
+{
+  "metrics": {
+    "three_equal": {
+      "MAE": 0.3409756307993511,
+      "R2": 0.2457989481386927,
+      "Spearman": 0.42217956555815306
+    },
+    "ET_pair": {
+      "MAE": 0.33870971744651823,
+      "R2": 0.25015132293307135,
+      "Spearman": 0.4295858189240238
+    },
+    "group_LP": {
+      "MAE": 0.33845747489159,
+      "R2": 0.2506048935099268,
+      "Spearman": 0.42726527891459326
+    },
+    "attribute_LP": {
+      "MAE": 0.33956270918240994,
+      "R2": 0.2447976873665858,
+      "Spearman": 0.4207894184318343
+    }
+  },
+  "comparisons": {
+    "group_LP_vs_three_equal": {
+      "relative_MAE_gain": 0.0074312880954367005,
+      "approx_95pct_CI": [
+        0.0035387245570585577,
+        0.011323851633814844
+      ],
+      "R2_difference": 0.004805945371234105,
+      "passes": false
+    },
+    "group_LP_vs_ET_pair": {
+      "relative_MAE_gain": 0.0007130963098150822,
+      "approx_95pct_CI": [
+        -0.0028165455253773056,
+        0.00424273814500747
+      ],
+      "R2_difference": 0.00045357057685546653,
+      "passes": false
+    },
+    "attribute_LP_vs_three_equal": {
+      "relative_MAE_gain": 0.00416185776579132,
+      "approx_95pct_CI": [
+        -0.0003698319121076517,
+        0.008693547443690292
+      ],
+      "R2_difference": -0.00100126077210691,
+      "passes": false
+    },
+    "attribute_LP_vs_ET_pair": {
+      "relative_MAE_gain": -0.0025812739136929453,
+      "approx_95pct_CI": [
+        -0.008381044604082483,
+        0.003218496776696591
+      ],
+      "R2_difference": -0.005353635566485548,
+      "passes": false
+    },
+    "attribute_LP_vs_group_LP": {
+      "relative_MAE_gain": -0.003296163142645682,
+      "approx_95pct_CI": [
+        -0.007539942169962963,
+        0.0009476158846715987
+      ],
+      "R2_difference": -0.005807206143341015,
+      "passes": false
+    }
+  },
+  "selected": "ET_pair",
+  "elapsed_seconds": 314.5660216,
+  "status": "Reused 15 outer splits; true inner OOF fits; internal exploratory decision, no independent confirmation."
+}

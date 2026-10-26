@@ -1,0 +1,20 @@
+{
+  "classifier_enabled": false,
+  "active_acceptance": "v31_pass",
+  "status_counts": {
+    "conditional_fixed|fail": 1,
+    "conditional_fixed|incomplete": 2,
+    "conditional_fixed|pass": 8,
+    "ordinary_projected|fail": 1,
+    "ordinary_projected|incomplete": 2,
+    "ordinary_projected|pass": 8
+  },
+  "paired_complete_success_count": 8,
+  "paired_mean_change": {
+    "conditional_fixed": 0.45324499677246555,
+    "ordinary_projected": 0.49051021739359596
+  },
+  "minimum_same_alpha_dispersion_ratio": 0.9139203089456974,
+  "selected_migration": "conditional_fixed",
+  "note": "Point conditioning in fitted latent Gaussian; fixed observed native defect values; missing values not certified; no physical or causal guarantee."
+}

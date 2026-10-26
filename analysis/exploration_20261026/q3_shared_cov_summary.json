@@ -1,0 +1,29 @@
+{
+  "results": {
+    "common_original": {
+      "MAE": 0.8833195260529065,
+      "Wasserstein": 0.9652999199439846,
+      "floor_error": 0.16885915319248654,
+      "NN_ratio": 0.8678984727821649,
+      "correlation_RMSE": 0.31605488499791995
+    },
+    "common_shared_mix": {
+      "MAE": 0.8826240947817203,
+      "Wasserstein": 0.9650351804678586,
+      "floor_error": 0.16830896264229597,
+      "NN_ratio": 0.8904670789297942,
+      "correlation_RMSE": 0.30605882318688155
+    },
+    "common_shared_only": {
+      "MAE": 0.8869046066250277,
+      "Wasserstein": 0.9683624898833804,
+      "floor_error": 0.1700407493740827,
+      "NN_ratio": 0.8969642016040371,
+      "correlation_RMSE": 0.3038063600379398
+    }
+  },
+  "elapsed_seconds": 9.017225,
+  "sampling_seeds": 5,
+  "holdout_folds": 3,
+  "interpretation": "All latent marginal means and variances are identical across methods; differences in finite sampled marginals may result from Monte Carlo coupling. Reused 3 folds, exploratory, no independent confirmation or OT replacement."
+}

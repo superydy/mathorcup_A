@@ -1,0 +1,19 @@
+{
+  "Q1": "equal shared/independent ET",
+  "Q3_migration": "point-conditioned latent Gaussian OT",
+  "classifier_main": false,
+  "PSO_main": false,
+  "Q2_final_bootstrap_complete": false,
+  "paper_updated": false,
+  "support_counts": {
+    "B": 20,
+    "A": 17,
+    "C": 13
+  },
+  "relative_change_reduction": 0.075972363672963,
+  "evidence": [
+    "q1_blend_summary.json",
+    "classifier_summary.json",
+    "migration_summary.json"
+  ]
+}

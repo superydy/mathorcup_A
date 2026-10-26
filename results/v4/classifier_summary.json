@@ -1,0 +1,14 @@
+{
+  "enabled_as_v4_style_criterion": false,
+  "mean_metrics": {
+    "AUROC": 0.8103281853281853,
+    "balanced_accuracy": 0.736003861003861,
+    "Tripel_recall": 0.6071428571428571,
+    "Pils_false_positive_rate": 0.01818181818181818,
+    "specificity": 0.8648648648648649
+  },
+  "n_Tripel": 28,
+  "n_Pils": 11,
+  "selection": "Four fixed candidates, selected only in each outer training set using 2-fold inner balanced accuracy; threshold .5 fixed.",
+  "note": "Exploratory internal nested validation, reused subjects; no external confirmation; if not enabled no further classifier search."
+}

@@ -1,0 +1,13 @@
+fold,method,pooled_within_style_correlation_RMSE
+0,common_latent_original,0.27818792575550866
+0,conditional_local_corr,0.27900493585984243
+0,conditional_pooled_corr,0.2766375846252037
+0,conditional_mixed_corr,0.27649134879314297
+1,common_latent_original,0.31852386303018676
+1,conditional_local_corr,0.32033632433284603
+1,conditional_pooled_corr,0.3081963048025546
+1,conditional_mixed_corr,0.3100971316677901
+2,common_latent_original,0.35003329132663474
+2,conditional_local_corr,0.34966281253106624
+2,conditional_pooled_corr,0.3270764581885901
+2,conditional_mixed_corr,0.33217564782161035

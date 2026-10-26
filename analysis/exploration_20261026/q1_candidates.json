@@ -1,0 +1,106 @@
+[
+  [
+    "ET_original",
+    {
+      "kind": "ET",
+      "trees": 160,
+      "leaf": 3,
+      "mf": 0.7
+    }
+  ],
+  [
+    "ET_leaf1",
+    {
+      "kind": "ET",
+      "trees": 320,
+      "leaf": 1,
+      "mf": 0.7
+    }
+  ],
+  [
+    "ET_mf03",
+    {
+      "kind": "ET",
+      "trees": 320,
+      "leaf": 3,
+      "mf": 0.3
+    }
+  ],
+  [
+    "ET_leaf6",
+    {
+      "kind": "ET",
+      "trees": 320,
+      "leaf": 6,
+      "mf": 0.7
+    }
+  ],
+  [
+    "ET_unit_y",
+    {
+      "kind": "ET",
+      "trees": 320,
+      "leaf": 3,
+      "mf": 0.7,
+      "yscale": true
+    }
+  ],
+  [
+    "RF_regularized",
+    {
+      "kind": "RF",
+      "trees": 320,
+      "leaf": 3,
+      "mf": 0.7
+    }
+  ],
+  [
+    "Ridge10",
+    {
+      "kind": "Ridge",
+      "alpha": 10
+    }
+  ],
+  [
+    "Ridge100",
+    {
+      "kind": "Ridge",
+      "alpha": 100
+    }
+  ],
+  [
+    "PLS8",
+    {
+      "kind": "PLS",
+      "components": 8
+    }
+  ],
+  [
+    "SVR_rbf",
+    {
+      "kind": "SVR",
+      "C": 10,
+      "epsilon": 0.05
+    }
+  ],
+  [
+    "XGB_depth2",
+    {
+      "kind": "XGB",
+      "depth": 2,
+      "trees": 240,
+      "lr": 0.03,
+      "reg": 10
+    }
+  ],
+  [
+    "XGB_depth3",
+    {
+      "kind": "XGB",
+      "depth": 3,
+      "trees": 180,
+      "lr": 0.03,
+      "reg": 20
+    }
+  ]
+]

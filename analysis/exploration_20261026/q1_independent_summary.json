@@ -1,0 +1,52 @@
+{
+  "ET_independent": {
+    "MAE": 0.34142344146764114,
+    "R2": 0.23617061644813872,
+    "Spearman": 0.4102998428747023,
+    "relative_MAE_gain_vs_ET": 0.003985902500842772,
+    "corrected_approx_95pct_CI": [
+      -0.00946897016786901,
+      0.017440775169554557
+    ],
+    "meets_predeclared_adoption": false
+  },
+  "LGBM_L1": {
+    "MAE": 0.334139786938554,
+    "R2": 0.2111424754759728,
+    "Spearman": 0.40722006186924825,
+    "relative_MAE_gain_vs_ET": 0.025359438997308578,
+    "corrected_approx_95pct_CI": [
+      0.007204307015240077,
+      0.04351457097937708
+    ],
+    "meets_predeclared_adoption": true
+  },
+  "LGBM_L2": {
+    "MAE": 0.34602766774612803,
+    "R2": 0.21406792142880293,
+    "Spearman": 0.386756908151443,
+    "relative_MAE_gain_vs_ET": -0.009532427221407985,
+    "corrected_approx_95pct_CI": [
+      -0.028019832293049725,
+      0.008954977850233754
+    ],
+    "meets_predeclared_adoption": false
+  },
+  "ET_half_independent": {
+    "MAE": 0.33870971744651823,
+    "R2": 0.25015132293307135,
+    "Spearman": 0.4295858189240238,
+    "relative_MAE_gain_vs_ET": 0.011960982149649689,
+    "corrected_approx_95pct_CI": [
+      0.00480976130338065,
+      0.019112202995918728
+    ],
+    "meets_predeclared_adoption": true
+  },
+  "metadata": {
+    "elapsed_seconds": 702.3230282999999,
+    "n_outer_splits": 15,
+    "hyperparameter_search": false,
+    "note": "New fixed structural comparisons after reading source methods. Reused outer folds, exploratory; no target-wise selection based on outer outcomes."
+  }
+}

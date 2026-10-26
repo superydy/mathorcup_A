@@ -1,0 +1,11 @@
+method,alpha,mean_pairwise_distance
+conditional_fixed,0.0,0.9823347905485245
+conditional_fixed,0.25,0.9100783661390289
+conditional_fixed,0.5,0.8575965221334071
+conditional_fixed,0.75,0.8359165890875089
+conditional_fixed,1.0,0.8562177338124751
+ordinary_projected,0.0,0.9823347905485245
+ordinary_projected,0.25,0.9233722186218767
+ordinary_projected,0.5,0.8925783127980211
+ordinary_projected,0.75,0.8944626441455475
+ordinary_projected,1.0,0.9368625748126899

@@ -1,0 +1,137 @@
+"""Freeze decisions from completed protocol checks; preserve historical plan.
+AI assistance: OpenAI Codex, 2026-10-26.
+"""
+from pathlib import Path
+import json,shutil,hashlib,sys
+import numpy as np
+import pandas as pd
+from common import ROOT,OUT,load,splits
+sys.stdout.reconfigure(encoding='utf-8')
+q=json.loads((OUT/'q1_blend_summary.json').read_text());c=json.loads((OUT/'classifier_summary.json').read_text());m=json.loads((OUT/'migration_summary.json').read_text())
+assert q['selected']=='ET_pair', 'Adapt freeze text to selected method before freezing.'
+assert m['selected_migration']=='conditional_fixed'
+assert not c['enabled_as_v4_style_criterion']
+X,Y,styles=load();p=np.load(OUT/'q1_blend_oof.npz',allow_pickle=True)['ET_pair'];yy=Y.to_numpy();fields=list(Y)
+old=np.load(ROOT/'analysis/A_feasibility/floor_ablation/baseline_oof.npz',allow_pickle=True)
+assert np.array_equal(old['beer'],X.index.to_numpy()) and np.array_equal(old['fields'],Y.columns.to_numpy())
+assert p.shape==(5,len(X),50) and np.isfinite(p).all()
+dim=pd.read_csv(OUT/'q1_blend_dimension_metrics.csv');dim=dim[dim.method=='ET_pair'].set_index('field').loc[fields]
+ref=np.zeros_like(p);globalref=np.zeros_like(p)
+for sp in splits():
+    tr=X.index.get_indexer(sp['train_beer']);te=X.index.get_indexer(sp['test_beer']);r=sp['repeat']
+    means=Y.iloc[tr].groupby(styles.iloc[tr]).mean()
+    ref[r,te]=means.loc[styles.iloc[te]].to_numpy();globalref[r,te]=Y.iloc[tr].mean().to_numpy()
+mse=((p-yy)**2).mean(axis=(0,1));msestyle=((ref-yy)**2).mean(axis=(0,1));dim['MSE_skill_vs_style']=1-mse/msestyle
+dim['support_tier']=np.where(dim.R2>=.3,'A',np.where(dim.R2>=.1,'B','C'))
+meta=pd.read_csv(ROOT/'analysis/A_feasibility/day1/sensory_metadata.csv',index_col=0).loc[fields]
+dim['type']=meta.DataType;dim.to_csv(OUT/'q1_final_dimension_support.csv')
+mean=pd.DataFrame(p.mean(0),index=X.index,columns=fields);numeric=meta.index[meta.DataType=='numeric'];cat=meta.index[meta.DataType=='categorical']
+anchors=pd.DataFrame({'q05_oof':mean[numeric].quantile(.05),'q95_oof':mean[numeric].quantile(.95)})
+anchors['no_discrimination']=anchors.q95_oof-anchors.q05_oof<=1e-12
+assert not anchors.no_discrimination.any()
+anchors.to_json(OUT/'q1_final_anchors.json',orient='index',force_ascii=False,indent=2)
+mean.to_csv(OUT/'q1_final_oof_mean.csv')
+scores=(6*(mean[numeric]-anchors.q05_oof)/(anchors.q95_oof-anchors.q05_oof)).clip(0,6).round()
+scores.to_csv(OUT/'q1_final_numeric_scores.csv')
+reference=pd.DataFrame(globalref.mean(0),index=X.index,columns=fields)
+ticks=pd.DataFrame(index=X.index)
+for f in cat:
+    parent='_'.join(f.split('_')[:2])+'_all'
+    ticks[f]=((scores[parent]>0)&(mean[f]>reference[f])).astype(int)
+ticks.to_csv(OUT/'q1_final_categorical_ticks.csv')
+tiers=dim.support_tier.value_counts().to_dict();gain=1-m['paired_mean_change']['conditional_fixed']/m['paired_mean_change']['ordinary_projected']
+plan=ROOT/'docs/解题思路.md';archive=ROOT/'docs/解题思路_v3.1_历史冻结.md'
+if not archive.exists():shutil.copy2(plan,archive)
+text=f'''# 解题思路 v4 核心冻结版
+
+冻结日期：2026-10-26。依据results/v4中按运行前协议完成的核心对照确定。冻结方法、参数、验证和后续依赖，不将待执行工作写成已完成。原v3.1计划保留为解题思路_v3.1_历史冻结.md，旧模型结果不覆盖。
+
+## 一 本轮五项决策
+
+| 项目 | 冻结决定 |
+|---|---|
+| Q1输入 | 纯化学及附件原有理化指标；已知风格均值只作基线和扩展对照 |
+| Q1主模型 | 多输出ET与50个独立目标ET等权融合；LP权重未达到预设增益标准，动态门控/PSO不进入主模型 |
+| Q3风格判据 | 判别器未通过启用门槛，只作辅助诊断；旧距离验收继续为主标准 |
+| Q3迁移 | 四项已观测缺陷保持的潜在条件高斯OT；原OT+投影、首版优化器作对照 |
+| Q2 | 对最终完整融合模型重跑100次bootstrap和重要性；保留模块联合置换；不做knockoff |
+
+## 二 数据与统一口径
+
+- 250款，231个化学及理化指标，50个连续标准化感官响应；附件元数据为26项numeric、24项categorical。后者不是原始二元标签。
+- 70个共享校准指标中37列的有效正值配对符合log10；33列主要为原值且有例外，其余161列沿用原储存尺度，不统一重复取对数。NA按训练折中位数插补。
+- 保留重复最小值，不统一解释为已知检出限；不全数据缩尾、不改源缺陷测量。附件2按重算确认的Spearman处理。
+- 250款均已被既往分析使用。本轮称冻结规则后的统一内部验证，不称历史上未见的独立确认集。新模型选择只在外层训练集内进行。
+
+## 三 Q1 连续预测与相对评分
+
+### 3.1 主模型
+
+每个专家固定160棵ET、min_samples_leaf=3、max_features=0.7。多输出专家共享分裂结构；独立专家为每个属性训练单独ET。最终每维输出为两者平均。风格标签不进入前向预测。
+
+5次重复×3折风格分层的完整OOF：MAE={q['metrics']['ET_pair']['MAE']:.4f}，R²={q['metrics']['ET_pair']['R2']:.4f}，Spearman={q['metrics']['ET_pair']['Spearman']:.4f}。相对原ET的MAE改善证据见analysis/exploration_20261026/q1_independent_summary.json。
+
+三专家等权加入PLS后MAE={q['metrics']['three_equal']['MAE']:.4f}；分组LP={q['metrics']['group_LP']['MAE']:.4f}，逐属性LP={q['metrics']['attribute_LP']['MAE']:.4f}。分组LP相对双ET的改善约{100*q['comparisons']['group_LP_vs_ET_pair']['relative_MAE_gain']:.2f}%，区间跨0，因此不增加主模型复杂度。完整内层训练、LP解与外层指标保留。
+
+### 3.2 评分与支持度
+
+根据最终模型每款5次OOF均值，重建26项numeric的P5/P95，冻结后线性映射、截断并取整至0–6。展示分不参与模型评价或Q2重要性，不称恢复原始评分。categorical沿用相对训练折均值判定及父项门控；保留连续倾向、0/1勾选、模板展示值三种口径。
+
+支持度仍按逐维重复OOF R²：A>=0.3、B在[0.1,0.3)、C<0.1；本轮计数为{tiers}。另外报告相对风格均值MSE skill。映射与分档产物位于results/v4/q1_final_*，尚未写回旧评分卡或论文。
+
+### 3.3 后续补充
+
+保形区间须采用符合理论构造的split conformal或CV+，仅在所述交换性条件下讨论边际覆盖；普通OOF残差分位数不直接称覆盖保证。相对等级范围不是原始0–6标签区间，也不将真实样本覆盖保证延伸到优化生成谱。学习曲线固定测试集、仅改变训练子集，报告实际训练样本数，不凭平台期断言噪声上限。
+
+## 四 Q2 关联候选与稳定性
+
+固定附件2的|rho|>=0.6描述性图与19个非单点模块；217个合格单体化学候选用于Top-3，派生/混合/理化指标仍可作模型输入但单列身份。共表达图不作全样本标签筛选。
+
+正式解释对象为最终双ET等权的完整预测函数。按22种风格分层bootstrap100次，袋外置换每列3次；重要性为MAE增加，报告入选频率、模块命中、PLS名单Jaccard及高度相关备选。备选为同模块|rho|>=0.8，不称化学等价。
+
+Q2旧模型Top-3与100次频率不直接迁移给新模型。最终模型重跑尚待完成，此前模块联合置换为旧模型解释补充。新运行必须保存抽样编号和阶段耗时；不以提高稳定率为优化目标，不做knockoff或FDR保证。
+
+ALE限乳酸—酸度、4VG—对应感官、异alpha酸—苦感等少量关系；合并并列分箱并标密度、支持度和核实单位后的阈值线。称模型响应而非因果剂量响应，不把阈值附近拐点当独立验证。
+
+## 五 Q3 生成与条件迁移
+
+### 5.1 生成主模型
+
+保持共同经验边际映射G和风格条件Ledoit–Wolf高斯。Tripel/Kriek/Lambic每种生成300条；留出评价与原基线同折、同噪声，报告边际距离、重复最小值占比、相关误差和最近邻诊断。共享相关混合仅保留为探索对照，暂不更改迁移所用协方差。
+
+### 5.2 条件OT
+
+在共同G空间，将四项缺陷D固定为源值的潜在坐标c，对其余227个指标R构造拟合源/目标高斯的条件均值及Schur补协方差，计算条件OT。alpha网格固定为0、0.25、0.5、0.75、1。回到原尺度时，四项已观测源测量坐标直接保留，其他指标使用G逆映射。
+
+这是潜在点条件近似：重复值对应的潜在区间没有按完整截断分布积分；固定源值比不增加更严格；不能称真实化学条件分布或工艺约束已被恢复。两款源双乙酰缺失仍不可完整验收。Stale hops仍为17项陈化增加与7项减少指标构成的代理，不能作感官保证。
+
+### 5.3 判别器与验收
+
+固定PCA10逻辑回归及限定4候选内层选模均未通过预设启用门槛。后者15个真实外层划分均值：AUROC={c['mean_metrics']['AUROC']:.3f}、平衡准确率={c['mean_metrics']['balanced_accuracy']:.3f}、Tripel召回={c['mean_metrics']['Tripel_recall']:.3f}、Pils误判率={c['mean_metrics']['Pils_false_positive_rate']:.3f}。只报告诊断，不使用分类器作为新主验收，不继续扩展分类器搜索。
+
+主验收保持v3.1四条：四项观测缺陷非增与最小值状态保留；共同空间中心距离下降>=20%；到真实Tripel最近邻距离下降>=10%；陈化代理非增。距离在最终谱经G重新映射后计算，统一231维RMS。中心收缩偏向及无效容许域的历史敏感性结论保留。
+
+### 5.4 核心比较结果
+
+两种OT均8款通过、beer209未通过、beer28和119不可完整验收；通过者均首次在alpha=0.5。共同8款中，条件OT平均改变量{m['paired_mean_change']['conditional_fixed']:.3f}，原OT+投影{m['paired_mean_change']['ordinary_projected']:.3f}，减少{100*gain:.1f}%。全部同alpha的离散度比例最低{m['minimum_same_alpha_dispersion_ratio']:.3f}，通过事先85%门槛，条件OT优先为主方法。
+
+原OT在alpha=0.5有42个可评价缺陷坐标，其中38个最终等于源值，但真正投影前超源值的为29个；二者不能混写。改变量比较不是独立显著性结论。条件OT同alpha下仍更集中，最终还需独立测量与品评。
+
+### 5.5 工艺方向
+
+按核实过的化合物来源分组候选变化；用可比较的标准化/百分位变化排序，不跨不同储存单位直接相加。输出待验证的调整方向和潜在副作用，不从来源标记推出温度、配方或投料量。
+
+## 六 依赖顺序及明确不做
+
+已完成：Q1三专家L1/L2真实内层比较；固定与内层选模判别器验证；条件OT与原OT统一验收；最终Q1锚点和支持度重建。
+
+后续必做：最终模型Q2 bootstrap重跑 → 关键ALE及适当区间/学习曲线 → 更新Q3感官画像与工艺方向表 → 统一正文数字和图。正文更新前不混用旧Q2与新Q1结果。
+
+本轮不做：动态门控/PSO主模型、knockoff、深度生成器、普通残差区间的覆盖保证、论坛一致性当上限。L3和PSO仅为可选扩展，需同预算优化器对照，不能因算法名称提高论文结论等级。附录暂不作为工作重点。
+'''
+plan.write_text(text,encoding='utf-8')
+summary=dict(Q1='equal shared/independent ET',Q3_migration='point-conditioned latent Gaussian OT',classifier_main=False,PSO_main=False,
+    Q2_final_bootstrap_complete=False,paper_updated=False,support_counts=tiers,relative_change_reduction= gain,
+    evidence=['q1_blend_summary.json','classifier_summary.json','migration_summary.json'])
+(OUT/'v4_freeze.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps(summary,ensure_ascii=False,indent=2))

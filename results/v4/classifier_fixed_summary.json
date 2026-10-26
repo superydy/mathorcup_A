@@ -1,0 +1,14 @@
+{
+  "activation_rule": "AUROC>=.80, BA>=.75, recall>=.70, Pils FPR<=.20; repeat means; threshold .5 fixed",
+  "enabled_as_v4_style_criterion": false,
+  "mean_metrics": {
+    "AUROC": 0.7616151866151866,
+    "balanced_accuracy": 0.706885456885457,
+    "Tripel_recall": 0.6714285714285715,
+    "Pils_false_positive_rate": 0.0,
+    "specificity": 0.7423423423423424
+  },
+  "n_Tripel": 28,
+  "n_Pils": 11,
+  "note": "Internal repeated OOF validation of fixed classifier. Scores are uncalibrated. No external confirmation."
+}

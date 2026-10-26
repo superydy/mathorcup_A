@@ -1,0 +1,64 @@
+{
+  "ET_original": {
+    "MAE": 0.34281559021694746,
+    "R2": 0.2329730806234506,
+    "Spearman": 0.412406641541379,
+    "relative_MAE_gain_vs_ET": 0.0,
+    "corrected_approx_95pct_CI": [
+      0.0,
+      0.0
+    ],
+    "meets_predeclared_adoption": false,
+    "n_positive_R2": 49
+  },
+  "inner_global": {
+    "MAE": 0.3402938070102273,
+    "R2": 0.2288778805876988,
+    "Spearman": 0.4015048660296175,
+    "relative_MAE_gain_vs_ET": 0.007350468917829763,
+    "corrected_approx_95pct_CI": [
+      -0.009379238305968606,
+      0.02408017614162813
+    ],
+    "meets_predeclared_adoption": false,
+    "n_positive_R2": 48
+  },
+  "inner_per_target": {
+    "MAE": 0.3383422727196382,
+    "R2": 0.23627181835232564,
+    "Spearman": 0.40964895125959616,
+    "relative_MAE_gain_vs_ET": 0.013012645212653367,
+    "corrected_approx_95pct_CI": [
+      0.0020335939011254228,
+      0.02399169652418131
+    ],
+    "meets_predeclared_adoption": true,
+    "n_positive_R2": 48
+  },
+  "inner_half_blend": {
+    "MAE": 0.33733061414359483,
+    "R2": 0.24668946058463856,
+    "Spearman": 0.42387160264371554,
+    "relative_MAE_gain_vs_ET": 0.016003886280826184,
+    "corrected_approx_95pct_CI": [
+      0.01041632317414168,
+      0.02159144938751069
+    ],
+    "meets_predeclared_adoption": true,
+    "n_positive_R2": 50
+  },
+  "metadata": {
+    "candidate_count": 12,
+    "outer_splits": 15,
+    "inner_splits": [
+      2
+    ],
+    "baseline_max_abs_reproduction_error": 8.881784197001252e-16,
+    "elapsed_seconds": 1807.9251855,
+    "protocol_sha256": "ea24c18f3fd50425a8c3ba522ec4e1ef1c729a3bb99143cc2cb75ed02c620111",
+    "note": "Post-result exploratory study on reused outer folds; inner model selection avoids direct test-label tuning, not an independent confirmation.",
+    "n_outer_folds_by_inner_count": {
+      "2": 15
+    }
+  }
+}
